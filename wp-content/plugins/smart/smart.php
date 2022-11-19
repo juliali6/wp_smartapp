@@ -42,42 +42,43 @@ function custom_form_show_content(){
         //Очистка данных
         $first_name = isset( $_POST['first_name'] ) ? sanitize_text_field( $_POST['first_name'] ) : '';
         $last_name = isset( $_POST['last_name'] ) ? sanitize_text_field( $_POST['last_name'] ) : '';
-        $subject = isset( $_POST['subject'] ) ? sanitize_text_field( $_POST['subject'] ) : '';
+        $subjects = isset( $_POST['subjects'] ) ? sanitize_text_field( $_POST['subjects'] ) : '';
         $email     = isset( $_POST['email'] ) ? sanitize_text_field( $_POST['email'] ) : '';
         $message   = isset( $_POST['message'] ) ? sanitize_textarea_field( $_POST['message'] ) : '';
 
         //Проверка данных на валидность
         if ( strlen( $first_name ) === 0 ) {
-            $validation_messages[] = esc_html__( 'Please enter a valid first_name.', 'twentytwentyone' );
+            $validation_messages[] = esc_html__( 'Please enter a valid first_name.', 'myprojuliasmartapp.com' );
         }
 
         if ( strlen( $last_name ) === 0 ) {
-            $validation_messages[] = esc_html__( 'Please enter a valid last_name.', 'twentytwentyone' );
+            $validation_messages[] = esc_html__( 'Please enter a valid last_name.', 'myprojuliasmartapp.com' );
         }
 
-        if ( strlen( $subject ) === 0 ) {
-            $validation_messages[] = esc_html__( 'Please enter a valid subject', 'twentytwentyone' );
+        if ( strlen( $subjects ) === 0 ) {
+            $validation_messages[] = esc_html__( 'Please enter a valid subject', 'myprojuliasmartapp.com' );
         }
 
         if ( strlen( $email ) === 0 or
             ! is_email( $email ) ) {
-            $validation_messages[] = esc_html__( 'Please enter a valid email address.', 'twentytwentyone' );
+            $validation_messages[] = esc_html__( 'Please enter a valid email address.', 'myprojuliasmartapp.com' );
         }
 
         if ( strlen( $message ) === 0 ) {
-            $validation_messages[] = esc_html__( 'Please enter a valid message.', 'twentytwentyone' );
+            $validation_messages[] = esc_html__( 'Please enter a valid message.', 'myprojuliasmartapp.com' );
         }
 
         //Отправка электронного письма админу, если ошибок ввода нет
         if ( empty( $validation_messages ) ) {
 
             $mail    = get_option( 'admin_email' );
-            $subject = 'New message from ' . $first_name;
-            $message = $message . ' - The email address of the customer is: ' . $mail;
+            $subject = $subjects . 'Subject';
+            $user = $first_name . $last_name . 'User';
+            $message = $message . ' - User: ' . $email;
 
-            wp_mail( $mail, $subject, $message );
+            wp_mail( $mail, $subject, $user, $message );
 
-            $success_message = esc_html__( 'Your message has been successfully sent.', 'twentytwentyone' );
+            $success_message = esc_html__('Your message has been successfully sent.','myprojuliasmartapp.com' );
 
         }
 
@@ -94,6 +95,9 @@ function custom_form_show_content(){
     if ( strlen( $success_message ) > 0 ) {
         echo '<div class="success-message">' . esc_html( $success_message ) . '</div>';
     }
+
+//    echo "Fist_name: $first_name <br> Last_name: $last_name <br> Subject: $subjects <br> Email: $email <br>Message: $message";
+
 
     ?>
 
@@ -116,8 +120,8 @@ function custom_form_show_content(){
         </div>
 
         <div class="form-section">
-            <label for="subject"><?php echo esc_html( 'Subject' ); ?></label>
-            <input type="text" maxlength="25" id="subject" name="subject">
+            <label for="subjects"><?php echo esc_html( 'Subject' ); ?></label>
+            <input type="text" maxlength="25" id="subjects" name="subjects">
         </div>
 
         <div class="form-section">
@@ -136,6 +140,10 @@ function custom_form_show_content(){
 
     <?php
 }
+
+// Регистрируем новый шорткод: [custom_form]
+add_shortcode( 'custom_form', 'custom_form_show_content' );
+
 
 
 
